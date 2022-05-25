@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { writeFile, readFile } from 'fs/promises';
 import asyncHandler from "express-async-handler"
 
@@ -33,6 +33,15 @@ const main = async (): Promise<void> => {
 
         res.status(200).send(memoryValue);
     }))
+
+    app.use('*', (req, res) => {
+        return res.status(404).send({ error: 'not found' });
+    });
+    
+    app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+        return res.status(500).send({ error: 'internal server error' });
+    });
+    
 
     app.listen(PORT, ()=>{
         console.log(`Listening on PORT ${PORT}`);
