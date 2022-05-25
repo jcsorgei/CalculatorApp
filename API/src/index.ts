@@ -1,5 +1,5 @@
 import express from 'express';
-import { writeFile } from 'fs/promises';
+import { writeFile, readFile } from 'fs/promises';
 import asyncHandler from "express-async-handler"
 
 
@@ -22,6 +22,16 @@ const main = async (): Promise<void> => {
 
         res.status(201).send(valueString);
 
+    }))
+
+    app.get("/memory", asyncHandler(async (_req, res) =>{
+        const memoryValue = await readFile("calculatorMemory.txt", "utf8");
+
+        if (!memoryValue) {
+            res.status(404).send({error: 'memory is empty'});
+        }
+
+        res.status(200).send(memoryValue);
     }))
 
     app.listen(PORT, ()=>{
