@@ -1,10 +1,11 @@
-import React, { useReducer } from "react";
+import axios from "axios";
+import { useReducer } from "react";
 import "./App.css";
 import NumberButton from "./components/NumberButton";
 import OperationButton from "./components/OperationButton";
 
 export type CalculatorState = {
-  operation: string | undefined;
+  operation: string;
   firstOperand: string;
   secondOperand: string;
   displayValue: string;
@@ -16,6 +17,7 @@ export enum ActionType {
   SET_OPERATION = "SET_OPERATION",
   EVALUATE = "EVALUATE",
   CLEAR = "CLEAR",
+  LOAD_MEMORY = "LOAD_MEMORY",
 }
 
 export type Action = {
@@ -98,7 +100,7 @@ function reducer(state: CalculatorState, action: Action): CalculatorState {
       if (state.secondOperand) {
         return {
           ...state,
-          operation: action.payload,
+          operation: action.payload || "",
           firstOperand: evaluate(state),
           secondOperand: "",
           displayValue: evaluate(state),
@@ -107,9 +109,8 @@ function reducer(state: CalculatorState, action: Action): CalculatorState {
 
       return {
         ...state,
-        operation: action.payload,
+        operation: action.payload || "",
         firstOperand: state.displayValue,
-        // displayValue: "",
       };
 
     case ActionType.EVALUATE:
@@ -123,10 +124,45 @@ function reducer(state: CalculatorState, action: Action): CalculatorState {
       }
 
       return state;
+
+    case ActionType.LOAD_MEMORY:
+      return {
+        operation: "",
+        firstOperand: "",
+        secondOperand: "",
+        displayValue: action.payload || "",
+      };
   }
 }
 
 function App() {
+  const getMemory = async (): Promise<void> => {
+    try {
+      const res = await axios.request({
+        url: `http://localhost:3000/memory/`,
+        method: "GET",
+      });
+      const memoryData = res.data.toString();
+      if (memoryData) {
+        dispatch({ type: ActionType.LOAD_MEMORY, payload: memoryData });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const saveMemory = async (): Promise<void> => {
+    try {
+      await axios.request({
+        url: `http://localhost:3000/memory/`,
+        method: "POST",
+        data: { value: displayValue },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [{ displayValue }, dispatch] = useReducer(reducer, {
     operation: "",
     firstOperand: "",
@@ -140,17 +176,29 @@ function App() {
         {displayValue || "0"}
       </div>
       <div
+        className="SAVE"
+        onClick={() => saveMemory()}
+        style={{ gridColumn: "1 / 3" }}
+      >
+        SAVE
+      </div>
+      <div
+        className="LOAD"
+        onClick={() => getMemory()}
+        style={{ gridColumn: "3 / 5" }}
+      >
+        LOAD
+      </div>
+      <div
         className="AC"
-        onClick={() => dispatch({ type: ActionType.CLEAR, payload: "" })}
+        onClick={() => dispatch({ type: ActionType.CLEAR })}
         style={{ gridColumn: "1 / 3" }}
       >
         AC
       </div>
       <div
         className="DEL"
-        onClick={() =>
-          dispatch({ type: ActionType.DELETE_NUMBER, payload: "" })
-        }
+        onClick={() => dispatch({ type: ActionType.DELETE_NUMBER })}
       >
         DEL
       </div>
@@ -171,7 +219,7 @@ function App() {
       <NumberButton number="0" dispatch={dispatch}></NumberButton>
       <div
         className="equal"
-        onClick={() => dispatch({ type: ActionType.EVALUATE, payload: "" })}
+        onClick={() => dispatch({ type: ActionType.EVALUATE })}
         style={{ gridColumn: "3 / 5" }}
       >
         =

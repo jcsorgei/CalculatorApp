@@ -7,7 +7,7 @@ body{
 .container{
     display:grid;
     grid-template-columns: repeat(4,60px);
-    grid-template-rows: repeat(6,60px);
+    grid-template-rows: repeat(7,60px);
     width: 50%;
     margin:auto;
     margin-top: 20px;
@@ -32,7 +32,7 @@ div.container>div{
 
 }
 
-.btn:hover, .op:hover, .AC:hover, .DEL:hover, .equal:hover, .dec:hover{
+.btn:hover, .op:hover, .AC:hover, .DEL:hover, .equal:hover, .dec:hover, .LOAD:hover, .SAVE:hover{
     cursor: pointer;
     transform: scale(1.1);
 }
