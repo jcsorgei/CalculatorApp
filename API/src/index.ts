@@ -1,13 +1,24 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { writeFile, readFile } from 'fs/promises';
 import asyncHandler from "express-async-handler"
+import cors from 'cors';
 
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
+const options: cors.CorsOptions = {
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Access-Token', 'Authorization'],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: `http://localhost:${process.env.NEXT_PORT || 3001}`,
+    preflightContinue: false,
+  };
+  
+
 const main = async (): Promise<void> => {
     const app = express();
     app.use(express.json());
+    app.use(cors(options));
 
     app.post("/memory", asyncHandler(async (req, res, next) => {
         const { value } = req.body;
