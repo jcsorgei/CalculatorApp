@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import "./App.css";
-import NumberButton from "./NumberButton";
+import NumberButton from "./components/NumberButton";
+import OperationButton from "./components/OperationButton";
 
 export type CalculatorState = {
   operation: string | undefined;
@@ -138,34 +139,41 @@ function App() {
       <div className="display" style={{ backgroundColor: "black" }}>
         {displayValue || "0"}
       </div>
-      <div className="AC" onClick={()=>dispatch({type:ActionType.CLEAR,payload:""})} style={{ gridColumn: "1 / 3" }}>
+      <div
+        className="AC"
+        onClick={() => dispatch({ type: ActionType.CLEAR, payload: "" })}
+        style={{ gridColumn: "1 / 3" }}
+      >
         AC
       </div>
-      <div className="DEL" onClick={()=>dispatch({type:ActionType.DELETE_NUMBER,payload:""})} >DEL</div>
-      <div className="op" onClick={()=>dispatch({type:ActionType.SET_OPERATION,payload:"/"})} style={{ backgroundColor: "darkorange" }}>
-        ÷
+      <div
+        className="DEL"
+        onClick={() =>
+          dispatch({ type: ActionType.DELETE_NUMBER, payload: "" })
+        }
+      >
+        DEL
       </div>
+      <OperationButton operation="÷" dispatch={dispatch}></OperationButton>
       <NumberButton number="1" dispatch={dispatch}></NumberButton>
       <NumberButton number="2" dispatch={dispatch}></NumberButton>
       <NumberButton number="3" dispatch={dispatch}></NumberButton>
-      <div className="op" onClick={()=>dispatch({type:ActionType.SET_OPERATION,payload:"*"})} style={{ backgroundColor: "darkorange" }}>
-        *
-      </div>
+      <OperationButton operation="*" dispatch={dispatch}></OperationButton>
       <NumberButton number="4" dispatch={dispatch}></NumberButton>
       <NumberButton number="5" dispatch={dispatch}></NumberButton>
       <NumberButton number="6" dispatch={dispatch}></NumberButton>
-      <div className="op" onClick={()=>dispatch({type:ActionType.SET_OPERATION,payload:"+"})} style={{ backgroundColor: "darkorange" }}>
-        +
-      </div>
+      <OperationButton operation="+" dispatch={dispatch}></OperationButton>
       <NumberButton number="7" dispatch={dispatch}></NumberButton>
       <NumberButton number="8" dispatch={dispatch}></NumberButton>
       <NumberButton number="9" dispatch={dispatch}></NumberButton>
-      <div className="op" onClick={()=>dispatch({type:ActionType.SET_OPERATION,payload:"-"})} style={{ backgroundColor: "darkorange" }}>
-        -
-      </div>
+      <OperationButton operation="-" dispatch={dispatch}></OperationButton>
       <NumberButton number="." dispatch={dispatch}></NumberButton>
       <NumberButton number="0" dispatch={dispatch}></NumberButton>
-      <div className="equal" onClick={()=>dispatch({type:ActionType.EVALUATE,payload:""})} style={{ gridColumn: "3 / 5" }}>
+      <div
+        className="equal"
+        onClick={() => dispatch({ type: ActionType.EVALUATE, payload: "" })}
+        style={{ gridColumn: "3 / 5" }}
+      >
         =
       </div>
     </div>

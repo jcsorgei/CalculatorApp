@@ -1,4 +1,4 @@
-import { Action, ActionType } from "./App";
+import { Action, ActionType } from "../App";
 
 export default function NumberButton(props: {
   number: string;
